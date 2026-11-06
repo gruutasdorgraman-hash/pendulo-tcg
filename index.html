@@ -11,7 +11,9 @@
   <div id="tela-menu" class="tela ativa">
     <h1>⚔️ PÊNDULO</h1>
     <p class="subtitulo-menu">O equilíbrio entre dois mundos está em suas mãos.</p>
-    
+    <div style="background: #181822; border: 1px solid #7209b7; padding: 8px; border-radius: 6px; margin-bottom: 15px; font-size: 0.8rem; color: #a5b4fc;">
+  🧪 <strong>Versão Beta Fechada</strong> - Obrigado por testar o PÊNDULO!
+</div>
     <!-- Perfil do Jogador -->
     <div style="margin: 15px 0; background: #181822; padding: 10px; border-radius: 8px; display: inline-block;">
       <span>Mestre: <strong><span id="nome-jogador-display">Aventureiro</span></strong></span>
@@ -24,6 +26,7 @@
       <button onclick="mudarTela('tela-colecao')" style="width: 280px; font-size: 1.1rem;" class="btn-secundario">📦 Gerenciar Baralho</button>
       <button onclick="mudarTela('tela-loja')" style="width: 280px; font-size: 1.1rem; background-color: #f77f00;">🛒 Loja & Pacotes</button>
       <button onclick="mudarTela('tela-missoes')" style="width: 280px; font-size: 1.1rem; background-color: #2b9348;">📜 Missões Diárias</button>
+      <button id="btn-chefes-evento" onclick="mudarTela('tela-chefes')" style="width: 280px; font-size: 1.1rem; background-color: #ff0054; display: none;">🐉 Evento de Chefes</button>
 
       <!-- Botão dinâmico da Loja do Além (Começa escondido) -->
       <button id="btn-loja-alem" onclick="mudarTela('tela-loja-alem')" style="width: 280px; font-size: 1.1rem; background-color: #4361ee; display: none;">🌌 Loja do Além (Aberta!)</button>
@@ -97,7 +100,21 @@
     </div>
   </div>
 
-  <!-- ================= TELA: PAINEL SECRETO DO DONO ================= -->
+  <!-- ================= TELA: EVENTO DE CHEFES ================= -->
+  <div id="tela-chefes" class="tela">
+    <div class="menu-superior">
+      <h2>🐉 Invasão de Titãs & Chefes</h2>
+      <button onclick="mudarTela('tela-menu')">Menu Principal</button>
+    </div>
+
+    <p style="color: #ff758f; font-style: italic;">Derrote o chefe ativo antes que ele fuja e conquiste sua Carta Secreta temporária (Validade de 5 dias)!</p>
+    
+    <div id="container-chefe-ativo" style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; gap: 15px;">
+      <!-- O conteúdo do chefe ativo injeta aqui via JS -->
+    </div>
+  </div>
+
+ <!-- ================= TELA: PAINEL SECRETO DO DONO ================= -->
   <div id="tela-dono" class="tela">
     <div class="menu-superior">
       <h2>⚙️ Painel de Testes (Dono do Jogo)</h2>
@@ -106,13 +123,41 @@
 
     <p style="color: #ffd166;">Área restrita de testes. Use os comandos abaixo livremente:</p>
     
-    <div style="display: flex; flex-direction: column; gap: 15px; align-items: center; margin: 30px 0;">
-      <button onclick="donoDarOuro()" style="width: 300px; background-color: #38b000;">💰 Adicionar +1000 Ouro</button>
-      <button onclick="donoLiberarTodasCartas()" style="width: 300px; background-color: #48bfe3;">📦 Liberar Todas as 50 Cartas</button>
-      <button onclick="donoMaxPontos()" style="width: 300px; background-color: #7209b7;">⭐ Adicionar +100 Pontos de Aventura</button>
-      <button onclick="donoAlternarManaInfinita()" id="btn-mana-infinita" style="width: 300px; background-color: #f77f00;">⚡ Ativar Mana Infinita (Desligado)</button>
-      <!-- Atalho direto para testar a Loja do Além a qualquer momento -->
-      <button onclick="mudarTela('tela-loja-alem')" style="width: 300px; background-color: #4361ee;">🌌 Abrir Loja do Além (Fora de Hora)</button>
+    <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; margin: 20px 0;">
+      <button onclick="donoDarOuro()" style="width: 320px; background-color: #38b000;">💰 Adicionar +1000 Ouro</button>
+      <button onclick="donoLiberarTodasCartas()" style="width: 320px; background-color: #48bfe3;">📦 Liberar Todas as 50 Cartas (3x)</button>
+      <button onclick="donoMaxPontos()" style="width: 320px; background-color: #7209b7;">⭐ Adicionar +100 Pontos de Aventura</button>
+      <button onclick="donoAlternarManaInfinita()" id="btn-mana-infinita" style="width: 320px; background-color: #f77f00;">⚡ Ativar Mana Infinita (Desligado)</button>
+      <button onclick="donoLiberarTodasSecretas()" style="width: 320px; background-color: #ff0054;">✨ Adicionar Todas as 6 Cartas Secretas</button>
+      <button onclick="mudarTela('tela-catalogo-dono')" style="width: 320px; background-color: #4361ee;">📖 Abrir Catálogo Completo (50 Cartas)</button>
+      <button onclick="mudarTela('tela-loja-alem')" style="width: 320px; background-color: #3a0ca3;">🌌 Abrir Loja do Além (Fora de Hora)</button>
+    </div>
+
+    <!-- Seleção de Bosses no Painel de Dono -->
+    <div style="margin-top: 15px; text-align: center;">
+      <p style="color: #ff758f; margin-bottom: 5px; font-size: 0.85rem;">Testar Boss Específico:</p>
+      <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; max-width: 340px; margin: 0 auto;">
+        <button onclick="iniciarBatalhaChefe(1)" style="font-size: 0.75rem; background-color: #ff0054;">🦖 Godzilla</button>
+        <button onclick="iniciarBatalhaChefe(2)" style="font-size: 0.75rem; background-color: #48bfe3;">🤖 Mega Robot</button>
+        <button onclick="iniciarBatalhaChefe(3)" style="font-size: 0.75rem; background-color: #7209b7;">🐍 Basilisco</button>
+        <button onclick="iniciarBatalhaChefe(4)" style="font-size: 0.75rem; background-color: #4361ee;">🐉 Drg. Quântico</button>
+        <button onclick="iniciarBatalhaChefe(5)" style="font-size: 0.75rem; background-color: #f77f00;">🗿 Golem</button>
+        <button onclick="iniciarBatalhaChefe(6)" style="font-size: 0.75rem; background-color: #3a0ca3;">🐙 Leviatã</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TELA: CATÁLOGO COMPLETO DE TESTES (DONO) ================= -->
+  <div id="tela-catalogo-dono" class="tela">
+    <div class="menu-superior">
+      <h2>📖 Catálogo de Testes (50 Cartas + Secretas)</h2>
+      <button onclick="mudarTela('tela-dono')">Voltar ao Painel</button>
+    </div>
+
+    <p style="color: #a5b4fc; font-size: 0.85rem;">Clique em qualquer carta abaixo para adicionar 1 cópia instantaneamente à sua coleção:</p>
+    
+    <div id="lista-catalogo-dono" class="area-cartas" style="margin-top: 15px; padding-bottom: 30px;">
+      <!-- As 50 cartas + secretas são renderizadas aqui pelo JavaScript -->
     </div>
   </div>
   <!-- ================= TELA: DUELO ================= -->
