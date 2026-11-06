@@ -1,0 +1,196 @@
+:root {
+  --bg-color: #0b0b0f;
+  --card-bg: #16161d;
+  --accent: #7209b7;
+  --mana: #4cc9f0;
+  --gold: #ffd166;
+  --text: #ffffff;
+  --border: #2a2a38;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  background-color: var(--bg-color);
+  color: var(--text);
+  margin: 0;
+  padding: 20px;
+}
+
+.subtitulo-menu {
+  color: #adb5bd;
+  font-style: italic;
+  margin-top: -5px;
+}
+
+h1, h2, h3 {
+  margin: 10px 0;
+}
+
+.tela {
+  display: none;
+  max-width: 950px;
+  margin: 0 auto;
+  background: #121218;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+  border: 1px solid var(--border);
+}
+
+.tela.ativa {
+  display: block;
+}
+
+.menu-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #181822;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background-color: #560bad;
+  transform: translateY(-2px);
+}
+
+.btn-secundario {
+  background-color: #3a0ca3;
+}
+.btn-secundario:hover {
+  background-color: #4361ee;
+}
+
+button:disabled {
+  background-color: #333342;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.area-cartas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+  min-height: 180px;
+}
+
+.carta {
+  width: 130px;
+  height: 185px;
+  background-color: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.carta:hover {
+  transform: translateY(-8px);
+}
+
+/* Raridades estilizadas */
+.carta-comum { border-color: #6c757d; }
+.carta-rara { border-color: #48bfe3; box-shadow: 0 0 8px rgba(72, 191, 227, 0.4); }
+.carta-épica { border-color: #7209b7; box-shadow: 0 0 10px rgba(114, 9, 183, 0.6); }
+.carta-lendária { border-color: #f77f00; box-shadow: 0 0 14px rgba(247, 127, 0, 0.8); }
+
+.custo-mana {
+  color: var(--mana);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.nome-carta {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.detalhes-carta {
+  font-size: 0.75rem;
+  color: #adb5bd;
+}
+
+.badge-qtd {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.filtros {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.filtros button {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background: #1f1f2b;
+}
+
+.filtros button.ativo {
+  background: var(--accent);
+}
+
+.paineis-colecao {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  text-align: left;
+}
+
+.coluna-painel {
+  background: #0d0d12;
+  padding: 15px;
+  border-radius: 8px;
+  min-height: 300px;
+  border: 1px solid #1e1e28;
+}
+
+#placar-duelo {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.1rem;
+  background: #181822;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.painel-status {
+  text-align: left;
+}

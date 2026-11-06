@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PÊNDULO - Jogo de Cartas Colecionáveis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+ <!-- ================= TELA: MENU PRINCIPAL ================= -->
+  <div id="tela-menu" class="tela ativa">
+    <h1>⚔️ PÊNDULO</h1>
+    <p class="subtitulo-menu">O equilíbrio entre dois mundos está em suas mãos.</p>
+    
+    <!-- Perfil do Jogador -->
+    <div style="margin: 15px 0; background: #181822; padding: 10px; border-radius: 8px; display: inline-block;">
+      <span>Mestre: <strong><span id="nome-jogador-display">Aventureiro</span></strong></span>
+      <button onclick="mudarNome()" style="padding: 4px 10px; font-size: 0.8rem; margin-left: 10px;">Alterar Nome</button>
+    </div>
+
+   <div style="margin: 20px 0; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+      <button onclick="iniciarArena()" style="width: 280px; font-size: 1.2rem; background-color: #7209b7;">🔥 Modo Arena (Desafio)</button>
+      <button onclick="mudarTela('tela-duelo')" style="width: 280px; font-size: 1.1rem; background-color: #3a0ca3;">⚔️ Duelo de Teste</button>
+      <button onclick="mudarTela('tela-colecao')" style="width: 280px; font-size: 1.1rem;" class="btn-secundario">📦 Gerenciar Baralho</button>
+      <button onclick="mudarTela('tela-loja')" style="width: 280px; font-size: 1.1rem; background-color: #f77f00;">🛒 Loja & Pacotes</button>
+      <button onclick="mudarTela('tela-missoes')" style="width: 280px; font-size: 1.1rem; background-color: #2b9348;">📜 Missões Diárias</button>
+
+      <!-- Botão dinâmico da Loja do Além (Começa escondido) -->
+      <button id="btn-loja-alem" onclick="mudarTela('tela-loja-alem')" style="width: 280px; font-size: 1.1rem; background-color: #4361ee; display: none;">🌌 Loja do Além (Aberta!)</button>
+    </div>
+  </div>
+
+  <!-- ================= TELA: COLEÇÃO / DECK ================= -->
+  <div id="tela-colecao" class="tela">
+    <div class="menu-superior">
+      <h2>Gerenciar Baralho (Deck: <span id="contador-deck">0</span>/10)</h2>
+      <button onclick="mudarTela('tela-menu')">Menu Principal</button>
+    </div>
+
+    <div class="filtros">
+      <button class="ativo" onclick="filtrarColecao('Todos')">Todas</button>
+      <button onclick="filtrarColecao('Fogo')">🔥 Fogo</button>
+      <button onclick="filtrarColecao('Luz')">✨ Luz</button>
+      <button onclick="filtrarColecao('Sombra')">🌙 Sombra</button>
+      <button onclick="filtrarColecao('Arcano')">🔮 Arcano</button>
+    </div>
+
+    <div class="paineis-colecao">
+      <div class="coluna-painel">
+        <h3>Sua Coleção (Clique para adicionar)</h3>
+        <div id="lista-colecao" class="area-cartas" style="justify-content: flex-start;"></div>
+      </div>
+      <div class="coluna-painel">
+        <h3>Seu Deck Ativo (Clique para remover)</h3>
+        <div id="lista-deck" class="area-cartas" style="justify-content: flex-start;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TELA: LOJA / BOOSTERS ================= -->
+  <div id="tela-loja" class="tela">
+    <div class="menu-superior">
+      <h2>Loja de Pacotes - Primeiro Impacto</h2>
+      <div>🪙 Ouro: <span id="qtd-ouro">50</span></div>
+      <button onclick="mudarTela('tela-menu')">Menu Principal</button>
+    </div>
+
+    <p>Abra um booster pack por <strong>20 de Ouro</strong> e expanda sua coleção!</p>
+    <button onclick="abrirPacote()" id="btn-comprar">Comprar Pacote 🎁</button>
+
+    <h3>Cartas Obtidas:</h3>
+    <div id="resultado-pacote" class="area-cartas"></div>
+
+    <!-- Botão Secreto de Dono (Pequeno e Branco) -->
+    <div style="margin-top: 40px; text-align: right;">
+      <button onclick="tentarAbrirPainelDono()" style="padding: 2px 6px; font-size: 0.6rem; background-color: #ffffff; color: #000000; border-radius: 3px; cursor: pointer;">⚙️</button>
+    </div>
+  </div>
+
+  <!-- ================= TELA: MISSÕES DIÁRIAS ================= -->
+  <div id="tela-missoes" class="tela">
+    <div class="menu-superior">
+      <h2>📜 Mural de Missões Diárias</h2>
+      <button onclick="mudarTela('tela-menu')">Menu Principal</button>
+    </div>
+
+    <p style="color: #a5b4fc; font-style: italic;">Desafios difíceis que mudam a cada 24 horas em troca de recompensas grandiosos.</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-top: 30px;">
+      <div id="card-missao-ativa" style="background: #181822; border: 2px solid #2b9348; padding: 20px; border-radius: 10px; width: 380px; text-align: center;">
+        <h3 id="titulo-missao" style="color: #52b788; margin-top: 0;">Carregando missão...</h3>
+        <p id="desc-missao" style="font-size: 0.9rem; color: #ccc;">Aguarde um momento.</p>
+        <p style="font-size: 0.8rem; color: #ffd166;">Recompensa: <span id="recompensa-missao">0</span> ⭐</p>
+        <button id="btn-resgatar-missao" onclick="resgatarMissaoDiaria()" style="background-color: #52b788; width: 100%; margin-top: 10px; display: none;">🎁 Resgatar Recompensa</button>
+        <p id="status-tempo-missao" style="font-size: 0.75rem; color: #888; margin-top: 10px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TELA: PAINEL SECRETO DO DONO ================= -->
+  <div id="tela-dono" class="tela">
+    <div class="menu-superior">
+      <h2>⚙️ Painel de Testes (Dono do Jogo)</h2>
+      <button onclick="mudarTela('tela-loja')">Voltar à Loja</button>
+    </div>
+
+    <p style="color: #ffd166;">Área restrita de testes. Use os comandos abaixo livremente:</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px; align-items: center; margin: 30px 0;">
+      <button onclick="donoDarOuro()" style="width: 300px; background-color: #38b000;">💰 Adicionar +1000 Ouro</button>
+      <button onclick="donoLiberarTodasCartas()" style="width: 300px; background-color: #48bfe3;">📦 Liberar Todas as 50 Cartas</button>
+      <button onclick="donoMaxPontos()" style="width: 300px; background-color: #7209b7;">⭐ Adicionar +100 Pontos de Aventura</button>
+      <button onclick="donoAlternarManaInfinita()" id="btn-mana-infinita" style="width: 300px; background-color: #f77f00;">⚡ Ativar Mana Infinita (Desligado)</button>
+      <!-- Atalho direto para testar a Loja do Além a qualquer momento -->
+      <button onclick="mudarTela('tela-loja-alem')" style="width: 300px; background-color: #4361ee;">🌌 Abrir Loja do Além (Fora de Hora)</button>
+    </div>
+  </div>
+  <!-- ================= TELA: DUELO ================= -->
+  <div id="tela-duelo" class="tela">
+    <div class="menu-superior">
+      <h2>Duelo Pêndulo</h2>
+      <button onclick="mudarTela('tela-menu')">Desistir / Sair</button>
+    </div>
+
+    <div id="placar-duelo">
+      <div class="painel-status">
+        <p>❤️ Sua Vida: <span id="sua-vida">30</span>/30</p>
+        <p>🧪 Mana: <span id="mana-jogador">3</span> / <span id="mana-maxima">3</span></p>
+      </div>
+      <div class="painel-status">
+        <p>💀 Vida Oponente: <span id="vida-inimigo">30</span>/30</p>
+        <p>🛡️ Escudo Oponente: <span id="escudo-inimigo">0</span></p>
+      </div>
+    </div>
+
+    <h3>Sua Mão (Clique para jogar)</h3>
+    <div id="mao-duelo" class="area-cartas"></div>
+
+    <div style="margin-top: 20px;">
+      <button id="btn-passar-turno" onclick="passarTurno()">Encerrar Turno</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+<!-- ================= TELA: LOJA DO ALÉM (TEMPORÁRIA) ================= -->
+  <div id="tela-loja-alem" class="tela">
+    <div class="menu-superior">
+      <h2>🌌 Loja do Além (Mercado Arcano)</h2>
+      <div>⭐ Pontos de Aventura: <span id="qtd-pontos-alem">0</span></div>
+      <button onclick="mudarTela('tela-menu')">Menu Principal</button>
+    </div>
+
+    <p style="color: #a5b4fc; font-style: italic;">Um santuário misterioso que negocia relíquias em troca de Pontos de Aventura.</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-top: 20px; padding-bottom: 30px;">
+      
+      <!-- Item 1: Pacote Raro/Lendário -->
+      <div style="background: #181822; border: 1px solid #4361ee; padding: 15px; border-radius: 8px; width: 350px; text-align: left; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4 style="margin: 0; color: #48bfe3;">🎁 Pacote do Vértigo</h4>
+          <p style="font-size: 0.8rem; margin: 5px 0 0 0; color: #aaa;">Garante 1 carta Épica ou Lendária!</p>
+        </div>
+        <button onclick="comprarItemAlem('pacote_epico', 50)" style="background-color: #4361ee; font-size: 0.9rem;">50 ⭐</button>
+      </div>
+
+      <!-- Item 2: Aumento de Mana Permanente -->
+      <div style="background: #181822; border: 1px solid #7209b7; padding: 15px; border-radius: 8px; width: 350px; text-align: left; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4 style="margin: 0; color: #b5179e;">🧪 Essência de Mana Max</h4>
+          <p style="font-size: 0.8rem; margin: 5px 0 0 0; color: #aaa;">Aumenta sua Mana Máxima em +1 (Atual: <span id="exibir-mana-atual">3</span>)</p>
+        </div>
+        <button onclick="comprarItemAlem('aumentar_mana', 30)" style="background-color: #7209b7; font-size: 0.9rem;">30 ⭐</button>
+      </div>
+
+      <!-- Item 3: Poção de Ouro Arcano -->
+      <div style="background: #181822; border: 1px solid #f77f00; padding: 15px; border-radius: 8px; width: 350px; text-align: left; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4 style="margin: 0; color: #f77f00;">🪙 Poção de Ouro Arcano</h4>
+          <p style="font-size: 0.8rem; margin: 5px 0 0 0; color: #aaa;">Concede instantaneamente +100 de Ouro!</p>
+        </div>
+        <button onclick="comprarItemAlem('pocao_ouro', 20)" style="background-color: #f77f00; font-size: 0.9rem;">20 ⭐</button>
+      </div>
+
+    </div>
+  </div>
